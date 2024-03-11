@@ -69,10 +69,15 @@ namespace Fachkonzept_Einstellungsaufgabe
                 {
                     e.CellStyle.BackColor = ColorTranslator.FromHtml("#71b0bf");
                 }
-                // keep highlighting after diff matches
+                // keep highlighting after diff matches and column wasn't found
                 else if (e.CellStyle.BackColor == ColorTranslator.FromHtml("#df7674"))
                 {
                     e.CellStyle.BackColor = ColorTranslator.FromHtml("#d14c49");
+                }
+                // keep highlighting after diff matches and cell value differs
+                else if (e.CellStyle.BackColor == ColorTranslator.FromHtml("#f5edac"))
+                {
+                    e.CellStyle.BackColor = ColorTranslator.FromHtml("#eed279");
                 }
                 else
                 {
@@ -183,8 +188,102 @@ namespace Fachkonzept_Einstellungsaufgabe
 
         private void showDifferencesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            // Dictionary<int, int> matching = new Dictionary<int, int>();
+            DataTable prodTable = dataControlPanel.prodGrid.DataSource as DataTable;
+            DataTable testTable = dataControlPanel.testGrid.DataSource as DataTable;
 
+            // find matching rows (prodTableRow, matchingTestTableRow)
+            if (prodTable != null && testTable != null)
+            {
+                // highlight differences
+                DataTable diffTable = dataControlPanel.diffGrid.DataSource as DataTable;
+
+                foreach (DataRow row in diffTable.Rows)
+                {
+                    DataRow checkRow = findSpecialRow(row, testTable);
+
+                    // no row found
+                    if (checkRow == row)
+                    {
+                        foreach (DataColumn diffColumn in diffTable.Columns)
+                        {
+                            dataControlPanel.diffGrid.Rows[diffTable.Rows.IndexOf(row)].Cells[diffColumn.ColumnName].Style.BackColor = ColorTranslator.FromHtml("#df7674");
+                        }
+                    }
+                    else
+                    {
+                        foreach (DataColumn diffColumn in diffTable.Columns)
+                        {
+                            if (testTable.Columns.Contains(diffColumn.ColumnName))
+                            {
+                                // column exists
+                                if (dataControlPanel.diffGrid.Rows[diffTable.Rows.IndexOf(row)].Cells[diffColumn.ColumnName].Value.ToString() !=
+                                        dataControlPanel.testGrid.Rows[testTable.Rows.IndexOf(checkRow)].Cells[diffColumn.ColumnName].Value.ToString() )
+                                {
+                                    dataControlPanel.diffGrid.Rows[diffTable.Rows.IndexOf(row)].Cells[diffColumn.ColumnName].Style.BackColor = ColorTranslator.FromHtml("#f5edac");
+                                }
+                            }
+                            // column doesn't exist
+                            else
+                            {
+                                dataControlPanel.diffGrid.Rows[diffTable.Rows.IndexOf(row)].Cells[diffColumn.ColumnName].Style.BackColor = ColorTranslator.FromHtml("#df7674");
+                            }
+                        }
+                    }
+                }
+
+
+               /* for (int i = 0; i < diffTable.Rows.Count; i++)
+                {
+                    DataRow diffRow = diffTable.Rows[i];
+                    DataRow checkRow = findSpecialRow(diffRow, testTable);
+                    
+                    // matching row found
+                    foreach (DataColumn diffColumn in diffTable.Columns)
+                    {
+                        if (checkRow.Table.Columns.Contains(diffColumn.ColumnName))
+                        {
+                            if (!diffRow[diffColumn.ColumnName].Equals(checkRow[diffColumn.ColumnName]))
+                            {
+                                dataControlPanel.diffGrid.Rows[i].Cells[diffColumn.ColumnName].Style.BackColor = ColorTranslator.FromHtml("#f5edac");
+                            }
+                        }
+                        else
+                        {
+                            dataControlPanel.diffGrid.Rows[i].Cells[diffColumn.ColumnName].Style.BackColor = ColorTranslator.FromHtml("#df7674");
+                        }
+                    }
+                }*/
+            }
+            else
+            {
+                MessageBox.Show("Please load both tables before comparing.", "Missing Data", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        // find special row
+        public DataRow findSpecialRow(DataRow rowToMatch, DataTable dtTableToFindRow)
+        {
+            // search for matching row
+            string strNameToMatch = rowToMatch["name"].ToString();
+            string strDisplayNameToMatch = rowToMatch["display_name"].ToString();
+
+            foreach (DataRow row in dtTableToFindRow.Rows)
+            {
+                string strName = row["name"].ToString();
+                string strDisplayName = row["display_name"].ToString();
+
+                if (strName == strNameToMatch || strDisplayName == strDisplayNameToMatch)
+                {
+                    return row;
+                }
+            }
+            // no row found
+            return rowToMatch;
+        }
+
+        /*private void showDifferencesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Dictionary<int, int> matching = new Dictionary<int, int>();
             DataTable prodTable = dataControlPanel.prodGrid.DataSource as DataTable;
             DataTable testTable = dataControlPanel.testGrid.DataSource as DataTable;
 
@@ -213,7 +312,13 @@ namespace Fachkonzept_Einstellungsaufgabe
                     {
                         if (testTable.Columns.Contains(diffColumn.ColumnName))
                         {
-                            // test if wring cell value
+                            if (dataControlPanel.diffGrid.Rows[i].Cells[diffColumn.ColumnName].Value.ToString() !=
+                                dataControlPanel.testGrid.Rows[matches[i]].Cells[diffColumn.ColumnName].Value.ToString())
+                            {
+                                dataControlPanel.diffGrid.Rows[i].Cells[diffColumn.ColumnName].Value !=
+                                    dataControlPanel.testGrid.Rows[matches[i]].Cells[diffColumn.ColumnName].Value.ToString();
+                                dataControlPanel.diffGrid.Rows[i].Cells[diffColumn.ColumnName].Style.BackColor = ColorTranslator.FromHtml("#f5edac");
+                            }
                         }
                         else
                         {
@@ -221,7 +326,6 @@ namespace Fachkonzept_Einstellungsaufgabe
                         }
                     }
                 }
-
             }
             else
             {
@@ -283,7 +387,7 @@ namespace Fachkonzept_Einstellungsaufgabe
                 }
             }
             return d[n, m];
-        }
+        }*/
 
         private void closeAltF4ToolStripMenuItem_Click(object sender, EventArgs e)
         {
