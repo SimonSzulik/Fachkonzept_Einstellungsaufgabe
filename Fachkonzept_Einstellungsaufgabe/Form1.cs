@@ -168,9 +168,81 @@ namespace Fachkonzept_Einstellungsaufgabe
                 }
             }
         }
+
+        private void showDifferencesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            DataTable prodTable = dataControlPanel.prodGrid.DataSource as DataTable;
+            DataTable testTable = dataControlPanel.testGrid.DataSource as DataTable;
+
+            if (prodTable != null && testTable != null)
+            {
+                // TO DO 
+            }
+            else
+            {
+                MessageBox.Show("Please load both tables before comparing.", "Missing Data", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        // row similarity
+        public DataRow findMostSimilarRow(DataRow rowToMatch, DataTable dtTableToFindRow)
+        {
+            DataRow mostSimilarRow = null;
+            int lowestDistance = int.MaxValue;
+
+            // search for similarity in columns "name" and "display_name"
+            string strNameToMatch = rowToMatch["name"].ToString();
+            string strDisplayNameToMatch = rowToMatch["display_name"].ToString();
+
+            foreach (DataRow row in dtTableToFindRow.Rows)
+            {
+                string strName = row["name"].ToString();
+                string strDisplayName = row["display_name"].ToString();
+
+                int distance = calculateLevenshteinDistance(strNameToMatch, strName)
+                               + calculateLevenshteinDistance(strDisplayNameToMatch, strDisplayName);
+
+                if (distance < lowestDistance)
+                {
+                    lowestDistance = distance;
+                    mostSimilarRow = row;
+                }
+            }
+            return mostSimilarRow;
+        }
+
+        // word similarity
+        public int calculateLevenshteinDistance(string s1, string s2)
+        {
+            int n = s1.Length;
+            int m = s2.Length;
+            int[,] d = new int[n + 1, m + 1];
+
+            if (n == 0)
+                return m;
+            if (m == 0)
+                return n;
+
+            for (int i = 0; i <= n; d[i, 0] = i++) ;
+            for (int j = 0; j <= m; d[0, j] = j++) ;
+
+            for (int i = 1; i <= n; i++)
+            {
+                for (int j = 1; j <= m; j++)
+                {
+                    int cost = (s2[j - 1] == s1[i - 1]) ? 0 : 1;
+
+                    d[i, j] = Math.Min(
+                        Math.Min(d[i - 1, j] + 1, d[i, j - 1] + 1),
+                        d[i - 1, j - 1] + cost);
+                }
+            }
+            return d[n, m];
+        }
+
         private void closeAltF4ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Close(); 
+            Close();
         }
     }
 }
