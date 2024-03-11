@@ -5,6 +5,8 @@ namespace Fachkonzept_Einstellungsaufgabe
 {
     public partial class Screen : Form
     {
+        // matching var
+        Dictionary<int, int> matches = new Dictionary<int, int>();
         public Screen()
         {
             InitializeComponent();
@@ -67,6 +69,11 @@ namespace Fachkonzept_Einstellungsaufgabe
                 {
                     e.CellStyle.BackColor = ColorTranslator.FromHtml("#71b0bf");
                 }
+                // keep highlighting after diff matches
+                else if (e.CellStyle.BackColor == ColorTranslator.FromHtml("#df7674"))
+                {
+                    e.CellStyle.BackColor = ColorTranslator.FromHtml("#d14c49");
+                }
                 else
                 {
                     e.CellStyle.BackColor = Color.LightGray;
@@ -112,8 +119,13 @@ namespace Fachkonzept_Einstellungsaufgabe
                 string extension = Path.GetExtension(filepath).ToLower();
                 if (extension == ".xls" || extension == ".xlsx" || extension == ".xlsm")
                 {
+                    // load to prod and diff
                     tabPage.Text = Path.GetFileName(filepath.Split(".xls")[0]);
                     loadFile(openFileDialog.FileName, tabPage.Controls.OfType<DataGridView>().First());
+                    if (tabPage.Name == "prodPage")
+                    {                    
+                        loadFile(openFileDialog.FileName, dataControlPanel.diffPage.Controls.OfType<DataGridView>().First());
+                    }
                 }
                 else
                 {
@@ -171,12 +183,45 @@ namespace Fachkonzept_Einstellungsaufgabe
 
         private void showDifferencesToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            // Dictionary<int, int> matching = new Dictionary<int, int>();
+
             DataTable prodTable = dataControlPanel.prodGrid.DataSource as DataTable;
             DataTable testTable = dataControlPanel.testGrid.DataSource as DataTable;
 
+            // find matching rows (prodTableRow, matchingTestTableRow)
             if (prodTable != null && testTable != null)
             {
-                // TO DO 
+                // create matching
+                if (matches.Count == 0)
+                {
+                    foreach (DataRow prodRow in prodTable.Rows)
+                    {
+                        DataRow mostSimilarRow = findMostSimilarRow(prodRow, testTable);
+                        matches.Add(prodTable.Rows.IndexOf(prodRow), testTable.Rows.IndexOf(mostSimilarRow));
+                    }
+                }
+
+                // highlight differences
+                DataTable diffTable = dataControlPanel.diffGrid.DataSource as DataTable;
+
+                for (int i = 0; i < diffTable.Rows.Count; i++)
+                {
+                    DataRow diffRow = diffTable.Rows[i];
+                    DataRow checkRow = testTable.Rows[i];
+
+                    foreach (DataColumn diffColumn in diffTable.Columns)
+                    {
+                        if (testTable.Columns.Contains(diffColumn.ColumnName))
+                        {
+                            // test if wring cell value
+                        }
+                        else
+                        {
+                            dataControlPanel.diffGrid.Rows[i].Cells[diffColumn.ColumnName].Style.BackColor = ColorTranslator.FromHtml("#df7674");
+                        }
+                    }
+                }
+
             }
             else
             {
