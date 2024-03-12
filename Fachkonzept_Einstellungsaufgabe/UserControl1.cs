@@ -11,7 +11,7 @@ namespace Fachkonzept_Einstellungsaufgabe
 
         private void filterButtonClick(object sender, EventArgs e)
         {
-            string filterString = filterText.Text;
+            string filterString = filterText.Text.Trim();
 
             TabPage currentTab = tabControl.SelectedTab;
             if (currentTab != null)
@@ -20,18 +20,61 @@ namespace Fachkonzept_Einstellungsaufgabe
                 if (currentGrid != null && currentGrid.DataSource is DataTable dataTable)
                 {
                     DataView dataView = dataTable.DefaultView;
-                    var filterExpressions = dataView.Table.Columns.Cast<DataColumn>().Select(col => $"Convert([{col.ColumnName}], 'System.String') LIKE '%{filterString}%'");
-
-                    string resetString = string.Join(" OR ", filterExpressions);
-                    dataView.RowFilter = resetString;
 
                     if (!string.IsNullOrWhiteSpace(filterString))
                     {
-                        higlightFilterCells(currentGrid, filterString);
+                        try
+                        {
+                            var pairs = filterString.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                            var filters = new List<string>();
+
+                            foreach (var pair in pairs)
+                            {
+                                var parts = pair.Split(new[] { '=' }, 2).Select(part => part.Trim().Trim('\'', '\"')).ToArray();
+                                if (parts.Length == 2)
+                                {
+                                    string columnName = parts[0];
+                                    string value = parts[1];
+
+                                    if (!dataTable.Columns.Contains(columnName))
+                                    {
+                                        // cancel computation if column not found
+                                        MessageBox.Show($"Column name '{columnName}' does not exist. Please check for typos.", "Filter Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                        return; 
+                                    }
+
+                                    filters.Add($"{columnName} = '{value}'");
+                                }
+                                else
+                                {
+                                    MessageBox.Show("Invalid filter format. Use 'ColumnName = Value'.", "Filter Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    return;
+                                }
+                            }
+
+                            // combining filters
+                            string combinedFilter = string.Join(" AND ", filters);
+                            dataView.RowFilter = combinedFilter;
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show($"Error applying filter: {ex.Message}", "Filter Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
                     }
+                    else
+                    {
+                        // no filter = show whole table
+                        dataView.RowFilter = string.Empty;
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("No table loaded into the current tab.", "Filter Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
         }
+
+        /*
         private void higlightFilterCells(DataGridView dataGridView, string filterString)
         {
             foreach (DataGridViewRow row in dataGridView.Rows)
@@ -49,10 +92,6 @@ namespace Fachkonzept_Einstellungsaufgabe
                 }
             }
         }
-
-        private void prodGrid_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
-
-        }
+        */
     }
 }

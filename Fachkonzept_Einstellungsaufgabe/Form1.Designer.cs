@@ -33,9 +33,14 @@
             fileToolStripMenuItem = new ToolStripMenuItem();
             loadTestToolStripMenuItem = new ToolStripMenuItem();
             loadProductiveToolStripMenuItem = new ToolStripMenuItem();
+            toolStripSeparator1 = new ToolStripSeparator();
             exportToolStripMenuItem = new ToolStripMenuItem();
+            toolStripSeparator2 = new ToolStripSeparator();
             closeAltF4ToolStripMenuItem = new ToolStripMenuItem();
             showDifferencesToolStripMenuItem = new ToolStripMenuItem();
+            helpToolStripMenuItem = new ToolStripMenuItem();
+            testfileToolStripMenuItem = new ToolStripMenuItem();
+            legendToolStripMenuItem = new ToolStripMenuItem();
             menu.SuspendLayout();
             SuspendLayout();
             // 
@@ -49,7 +54,7 @@
             // 
             // menu
             // 
-            menu.Items.AddRange(new ToolStripItem[] { fileToolStripMenuItem, showDifferencesToolStripMenuItem });
+            menu.Items.AddRange(new ToolStripItem[] { fileToolStripMenuItem, showDifferencesToolStripMenuItem, helpToolStripMenuItem });
             menu.Location = new Point(0, 0);
             menu.Name = "menu";
             menu.Size = new Size(795, 24);
@@ -58,7 +63,7 @@
             // 
             // fileToolStripMenuItem
             // 
-            fileToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { loadTestToolStripMenuItem, loadProductiveToolStripMenuItem, exportToolStripMenuItem, closeAltF4ToolStripMenuItem });
+            fileToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { loadTestToolStripMenuItem, loadProductiveToolStripMenuItem, toolStripSeparator1, exportToolStripMenuItem, toolStripSeparator2, closeAltF4ToolStripMenuItem });
             fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             fileToolStripMenuItem.Size = new Size(37, 20);
             fileToolStripMenuItem.Text = "File";
@@ -77,12 +82,22 @@
             loadProductiveToolStripMenuItem.Text = "Load Productive";
             loadProductiveToolStripMenuItem.Click += loadProductiveToolStripMenuItem_Click;
             // 
+            // toolStripSeparator1
+            // 
+            toolStripSeparator1.Name = "toolStripSeparator1";
+            toolStripSeparator1.Size = new Size(270, 6);
+            // 
             // exportToolStripMenuItem
             // 
             exportToolStripMenuItem.Name = "exportToolStripMenuItem";
             exportToolStripMenuItem.Size = new Size(273, 22);
             exportToolStripMenuItem.Text = "Export";
             exportToolStripMenuItem.Click += exportToolStripMenuItem_Click;
+            // 
+            // toolStripSeparator2
+            // 
+            toolStripSeparator2.Name = "toolStripSeparator2";
+            toolStripSeparator2.Size = new Size(270, 6);
             // 
             // closeAltF4ToolStripMenuItem
             // 
@@ -97,6 +112,25 @@
             showDifferencesToolStripMenuItem.Size = new Size(110, 20);
             showDifferencesToolStripMenuItem.Text = "Show Differences";
             showDifferencesToolStripMenuItem.Click += showDifferencesToolStripMenuItem_Click;
+            // 
+            // helpToolStripMenuItem
+            // 
+            helpToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { testfileToolStripMenuItem, legendToolStripMenuItem });
+            helpToolStripMenuItem.Name = "helpToolStripMenuItem";
+            helpToolStripMenuItem.Size = new Size(44, 20);
+            helpToolStripMenuItem.Text = "Help";
+            // 
+            // testfileToolStripMenuItem
+            // 
+            testfileToolStripMenuItem.Name = "testfileToolStripMenuItem";
+            testfileToolStripMenuItem.Size = new Size(180, 22);
+            testfileToolStripMenuItem.Text = "Tabs and Functions";
+            // 
+            // legendToolStripMenuItem
+            // 
+            legendToolStripMenuItem.Name = "legendToolStripMenuItem";
+            legendToolStripMenuItem.Size = new Size(180, 22);
+            legendToolStripMenuItem.Text = "Color Legend";
             // 
             // Screen
             // 
@@ -124,5 +158,10 @@
         private ToolStripMenuItem closeAltF4ToolStripMenuItem;
         private ToolStripMenuItem exportToolStripMenuItem;
         private ToolStripMenuItem showDifferencesToolStripMenuItem;
+        private ToolStripSeparator toolStripSeparator1;
+        private ToolStripSeparator toolStripSeparator2;
+        private ToolStripMenuItem helpToolStripMenuItem;
+        private ToolStripMenuItem legendToolStripMenuItem;
+        private ToolStripMenuItem testfileToolStripMenuItem;
     }
 }

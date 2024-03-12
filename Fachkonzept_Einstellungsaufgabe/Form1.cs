@@ -206,7 +206,7 @@ namespace Fachkonzept_Einstellungsaufgabe
                     {
                         foreach (DataColumn diffColumn in diffTable.Columns)
                         {
-                            dataControlPanel.diffGrid.Rows[diffTable.Rows.IndexOf(row)].Cells[diffColumn.ColumnName].Style.BackColor = ColorTranslator.FromHtml("#df7674");
+                            dataControlPanel.diffGrid.Rows[diffTable.Rows.IndexOf(row)].Cells[diffColumn.ColumnName].Style.BackColor = ColorTranslator.FromHtml("#6e5e5d");
                         }
                     }
                     else
@@ -230,29 +230,6 @@ namespace Fachkonzept_Einstellungsaufgabe
                         }
                     }
                 }
-
-
-               /* for (int i = 0; i < diffTable.Rows.Count; i++)
-                {
-                    DataRow diffRow = diffTable.Rows[i];
-                    DataRow checkRow = findSpecialRow(diffRow, testTable);
-                    
-                    // matching row found
-                    foreach (DataColumn diffColumn in diffTable.Columns)
-                    {
-                        if (checkRow.Table.Columns.Contains(diffColumn.ColumnName))
-                        {
-                            if (!diffRow[diffColumn.ColumnName].Equals(checkRow[diffColumn.ColumnName]))
-                            {
-                                dataControlPanel.diffGrid.Rows[i].Cells[diffColumn.ColumnName].Style.BackColor = ColorTranslator.FromHtml("#f5edac");
-                            }
-                        }
-                        else
-                        {
-                            dataControlPanel.diffGrid.Rows[i].Cells[diffColumn.ColumnName].Style.BackColor = ColorTranslator.FromHtml("#df7674");
-                        }
-                    }
-                }*/
             }
             else
             {
