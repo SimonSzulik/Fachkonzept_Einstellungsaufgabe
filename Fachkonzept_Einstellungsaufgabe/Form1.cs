@@ -1,15 +1,22 @@
 using ClosedXML.Excel;
+using MaterialSkin;
+using MaterialSkin.Controls;
 using System.Data;
 
 namespace Fachkonzept_Einstellungsaufgabe
 {
-    public partial class Screen : Form
+    public partial class Screen : MaterialForm
     {
         // matching var
         Dictionary<int, int> matches = new Dictionary<int, int>();
         public Screen()
         {
             InitializeComponent();
+            var materialSkinManager = MaterialSkinManager.Instance;
+            materialSkinManager.AddFormToManage(this);
+            materialSkinManager.Theme = MaterialSkinManager.Themes.DARK;
+            materialSkinManager.ColorScheme = new ColorScheme(Primary.BlueGrey800, Primary.BlueGrey900, Primary.BlueGrey500, Accent.LightBlue200, TextShade.WHITE);
+
             dataControlPanel.testGrid.CellFormatting += new DataGridViewCellFormattingEventHandler(dataGridView_CellFormatting);
             dataControlPanel.prodGrid.CellFormatting += new DataGridViewCellFormattingEventHandler(dataGridView_CellFormatting);
             dataControlPanel.diffGrid.CellFormatting += new DataGridViewCellFormattingEventHandler(dataGridView_CellFormatting);
@@ -64,13 +71,8 @@ namespace Fachkonzept_Einstellungsaufgabe
         {
             if (e.RowIndex % 2 == 1)
             {
-                // keep highlighting after adding filter color
-                if (e.CellStyle.BackColor == ColorTranslator.FromHtml("#addbe6"))
-                {
-                    e.CellStyle.BackColor = ColorTranslator.FromHtml("#71b0bf");
-                }
                 // keep highlighting after diff matches and column wasn't found
-                else if (e.CellStyle.BackColor == ColorTranslator.FromHtml("#df7674"))
+                if (e.CellStyle.BackColor == ColorTranslator.FromHtml("#df7674"))
                 {
                     e.CellStyle.BackColor = ColorTranslator.FromHtml("#d14c49");
                 }
@@ -79,28 +81,17 @@ namespace Fachkonzept_Einstellungsaufgabe
                 {
                     e.CellStyle.BackColor = ColorTranslator.FromHtml("#eed279");
                 }
+                // keep highlighting after diff matches and row wasn't found
+                else if (e.CellStyle.BackColor == ColorTranslator.FromHtml("#6e5e5d"))
+                {
+                    e.CellStyle.BackColor = ColorTranslator.FromHtml("#524544");
+                }
                 else
                 {
                     e.CellStyle.BackColor = Color.LightGray;
 
                 }
             }
-        }
-
-        // column clarity
-        private void dataGridView_Resize(object sender, EventArgs e)
-        {
-            int iMaxWidth = 0;
-            int iMaxVisibleColumns = 7;
-            for (int i = 0; i < iMaxVisibleColumns; i++)
-            {
-                iMaxWidth += dataControlPanel.testGrid.Columns[i].Width;
-                iMaxWidth += dataControlPanel.prodGrid.Columns[i].Width;
-                iMaxWidth += dataControlPanel.diffGrid.Columns[i].Width;
-            }
-            dataControlPanel.testGrid.Width = iMaxWidth;
-            dataControlPanel.prodGrid.Width = iMaxWidth;
-            dataControlPanel.diffGrid.Width = iMaxWidth;
         }
 
         private void loadTestToolStripMenuItem_Click(object sender, EventArgs e)
@@ -207,6 +198,7 @@ namespace Fachkonzept_Einstellungsaufgabe
                         foreach (DataColumn diffColumn in diffTable.Columns)
                         {
                             dataControlPanel.diffGrid.Rows[diffTable.Rows.IndexOf(row)].Cells[diffColumn.ColumnName].Style.BackColor = ColorTranslator.FromHtml("#6e5e5d");
+                            dataControlPanel.diffGrid.Rows[diffTable.Rows.IndexOf(row)].Cells[diffColumn.ColumnName].ToolTipText = "This Row doesn't exist in Testversion"; 
                         }
                     }
                     else
@@ -220,12 +212,15 @@ namespace Fachkonzept_Einstellungsaufgabe
                                         dataControlPanel.testGrid.Rows[testTable.Rows.IndexOf(checkRow)].Cells[diffColumn.ColumnName].Value.ToString() )
                                 {
                                     dataControlPanel.diffGrid.Rows[diffTable.Rows.IndexOf(row)].Cells[diffColumn.ColumnName].Style.BackColor = ColorTranslator.FromHtml("#f5edac");
+                                    dataControlPanel.diffGrid.Rows[diffTable.Rows.IndexOf(row)].Cells[diffColumn.ColumnName].ToolTipText = 
+                                        dataControlPanel.testGrid.Rows[testTable.Rows.IndexOf(checkRow)].Cells[diffColumn.ColumnName].Value.ToString();
                                 }
                             }
                             // column doesn't exist
                             else
                             {
                                 dataControlPanel.diffGrid.Rows[diffTable.Rows.IndexOf(row)].Cells[diffColumn.ColumnName].Style.BackColor = ColorTranslator.FromHtml("#df7674");
+                                dataControlPanel.diffGrid.Rows[diffTable.Rows.IndexOf(row)].Cells[diffColumn.ColumnName].ToolTipText = "This Column doesn't exist in Testversion"; 
                             }
                         }
                     }
@@ -257,114 +252,6 @@ namespace Fachkonzept_Einstellungsaufgabe
             // no row found
             return rowToMatch;
         }
-
-        /*private void showDifferencesToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Dictionary<int, int> matching = new Dictionary<int, int>();
-            DataTable prodTable = dataControlPanel.prodGrid.DataSource as DataTable;
-            DataTable testTable = dataControlPanel.testGrid.DataSource as DataTable;
-
-            // find matching rows (prodTableRow, matchingTestTableRow)
-            if (prodTable != null && testTable != null)
-            {
-                // create matching
-                if (matches.Count == 0)
-                {
-                    foreach (DataRow prodRow in prodTable.Rows)
-                    {
-                        DataRow mostSimilarRow = findMostSimilarRow(prodRow, testTable);
-                        matches.Add(prodTable.Rows.IndexOf(prodRow), testTable.Rows.IndexOf(mostSimilarRow));
-                    }
-                }
-
-                // highlight differences
-                DataTable diffTable = dataControlPanel.diffGrid.DataSource as DataTable;
-
-                for (int i = 0; i < diffTable.Rows.Count; i++)
-                {
-                    DataRow diffRow = diffTable.Rows[i];
-                    DataRow checkRow = testTable.Rows[i];
-
-                    foreach (DataColumn diffColumn in diffTable.Columns)
-                    {
-                        if (testTable.Columns.Contains(diffColumn.ColumnName))
-                        {
-                            if (dataControlPanel.diffGrid.Rows[i].Cells[diffColumn.ColumnName].Value.ToString() !=
-                                dataControlPanel.testGrid.Rows[matches[i]].Cells[diffColumn.ColumnName].Value.ToString())
-                            {
-                                dataControlPanel.diffGrid.Rows[i].Cells[diffColumn.ColumnName].Value !=
-                                    dataControlPanel.testGrid.Rows[matches[i]].Cells[diffColumn.ColumnName].Value.ToString();
-                                dataControlPanel.diffGrid.Rows[i].Cells[diffColumn.ColumnName].Style.BackColor = ColorTranslator.FromHtml("#f5edac");
-                            }
-                        }
-                        else
-                        {
-                            dataControlPanel.diffGrid.Rows[i].Cells[diffColumn.ColumnName].Style.BackColor = ColorTranslator.FromHtml("#df7674");
-                        }
-                    }
-                }
-            }
-            else
-            {
-                MessageBox.Show("Please load both tables before comparing.", "Missing Data", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-        // row similarity
-        public DataRow findMostSimilarRow(DataRow rowToMatch, DataTable dtTableToFindRow)
-        {
-            DataRow mostSimilarRow = null;
-            int lowestDistance = int.MaxValue;
-
-            // search for similarity in columns "name" and "display_name"
-            string strNameToMatch = rowToMatch["name"].ToString();
-            string strDisplayNameToMatch = rowToMatch["display_name"].ToString();
-
-            foreach (DataRow row in dtTableToFindRow.Rows)
-            {
-                string strName = row["name"].ToString();
-                string strDisplayName = row["display_name"].ToString();
-
-                int distance = calculateLevenshteinDistance(strNameToMatch, strName)
-                               + calculateLevenshteinDistance(strDisplayNameToMatch, strDisplayName);
-
-                if (distance < lowestDistance)
-                {
-                    lowestDistance = distance;
-                    mostSimilarRow = row;
-                }
-            }
-            return mostSimilarRow;
-        }
-
-        // word similarity
-        public int calculateLevenshteinDistance(string s1, string s2)
-        {
-            int n = s1.Length;
-            int m = s2.Length;
-            int[,] d = new int[n + 1, m + 1];
-
-            if (n == 0)
-                return m;
-            if (m == 0)
-                return n;
-
-            for (int i = 0; i <= n; d[i, 0] = i++) ;
-            for (int j = 0; j <= m; d[0, j] = j++) ;
-
-            for (int i = 1; i <= n; i++)
-            {
-                for (int j = 1; j <= m; j++)
-                {
-                    int cost = (s2[j - 1] == s1[i - 1]) ? 0 : 1;
-
-                    d[i, j] = Math.Min(
-                        Math.Min(d[i - 1, j] + 1, d[i, j - 1] + 1),
-                        d[i - 1, j - 1] + cost);
-                }
-            }
-            return d[n, m];
-        }*/
 
         private void closeAltF4ToolStripMenuItem_Click(object sender, EventArgs e)
         {

@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using System.Windows.Forms;
 
 namespace Fachkonzept_Einstellungsaufgabe
 {
@@ -73,25 +74,5 @@ namespace Fachkonzept_Einstellungsaufgabe
                 }
             }
         }
-
-        /*
-        private void higlightFilterCells(DataGridView dataGridView, string filterString)
-        {
-            foreach (DataGridViewRow row in dataGridView.Rows)
-            {
-                foreach (DataGridViewCell cell in row.Cells)
-                {
-                    if (cell.Value != null && cell.Value.ToString().Contains(filterString))
-                    {
-                        cell.Style.BackColor = ColorTranslator.FromHtml("#addbe6");
-                    }
-                    else
-                    {
-                        cell.Style.BackColor = dataGridView.DefaultCellStyle.BackColor;
-                    }
-                }
-            }
-        }
-        */
     }
 }

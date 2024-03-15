@@ -47,17 +47,17 @@
             // dataControlPanel
             // 
             dataControlPanel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            dataControlPanel.Location = new Point(0, 27);
+            dataControlPanel.Location = new Point(3, 91);
             dataControlPanel.Name = "dataControlPanel";
-            dataControlPanel.Size = new Size(795, 423);
+            dataControlPanel.Size = new Size(805, 393);
             dataControlPanel.TabIndex = 6;
             // 
             // menu
             // 
             menu.Items.AddRange(new ToolStripItem[] { fileToolStripMenuItem, showDifferencesToolStripMenuItem, helpToolStripMenuItem });
-            menu.Location = new Point(0, 0);
+            menu.Location = new Point(3, 64);
             menu.Name = "menu";
-            menu.Size = new Size(795, 24);
+            menu.Size = new Size(805, 24);
             menu.TabIndex = 7;
             menu.Text = "menu";
             // 
@@ -123,13 +123,13 @@
             // testfileToolStripMenuItem
             // 
             testfileToolStripMenuItem.Name = "testfileToolStripMenuItem";
-            testfileToolStripMenuItem.Size = new Size(180, 22);
+            testfileToolStripMenuItem.Size = new Size(175, 22);
             testfileToolStripMenuItem.Text = "Tabs and Functions";
             // 
             // legendToolStripMenuItem
             // 
             legendToolStripMenuItem.Name = "legendToolStripMenuItem";
-            legendToolStripMenuItem.Size = new Size(180, 22);
+            legendToolStripMenuItem.Size = new Size(175, 22);
             legendToolStripMenuItem.Text = "Color Legend";
             // 
             // Screen
@@ -137,12 +137,11 @@
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.Gainsboro;
-            ClientSize = new Size(795, 451);
+            ClientSize = new Size(811, 490);
             Controls.Add(dataControlPanel);
             Controls.Add(menu);
             MainMenuStrip = menu;
             Name = "Screen";
-            Text = "Screen";
             menu.ResumeLayout(false);
             menu.PerformLayout();
             ResumeLayout(false);
