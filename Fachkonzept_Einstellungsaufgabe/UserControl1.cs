@@ -1,5 +1,4 @@
 ﻿using System.Data;
-using System.Windows.Forms;
 
 namespace Fachkonzept_Einstellungsaufgabe
 {
@@ -41,7 +40,7 @@ namespace Fachkonzept_Einstellungsaufgabe
                                     {
                                         // cancel computation if column not found
                                         MessageBox.Show($"Column name '{columnName}' does not exist. Please check for typos.", "Filter Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                                        return; 
+                                        return;
                                     }
 
                                     filters.Add($"{columnName} = '{value}'");

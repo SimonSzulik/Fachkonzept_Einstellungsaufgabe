@@ -120,4 +120,34 @@
   <metadata name="menu.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>
+  <data name="tabHelp.Text" xml:space="preserve">
+    <value>Tabs:
+
+Testfile- &amp; Productive-tabs can be loaded using the respective function in the file menu.
+The difference tab cannot be written to individually and corresponds to the value of the productive table.
+
+**************************************************************************************
+
+Functions:
+
+The filterbutton helps to sort the view of the table and display only certain rows.
+The syntax to be used is as follows:  ColumnName = "filterWord". 
+Several filters can be linked to a comma.
+
+The menu item "Show Differences" shows all differences between the two tables in the corresponding tab.
+If you hover over a yellow cell, the difference in content appears in the form of a tooltip.
+By double-clicking, the content is updated and adapted to the value from the test table.
+</value>
+  </data>
+  <data name="colorHelp.Text" xml:space="preserve">
+    <value>Red: Indicates that the production table has a value in a column, while this column does not appear in test.
+
+Dark: shows that a row of the productive table does not occur in test.
+
+Yellow: Shows the cells that occur in both tables but are different. 
+
+
+
+By hovering with the mouse over the respective cell, you will get more information or the difference.</value>
+  </data>
 </root>

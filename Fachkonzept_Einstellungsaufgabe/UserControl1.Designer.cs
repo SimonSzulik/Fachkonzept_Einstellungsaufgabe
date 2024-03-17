@@ -142,6 +142,7 @@
             prodGrid.Size = new Size(663, 308);
             prodGrid.TabIndex = 1;
             prodGrid.VirtualMode = true;
+            prodGrid.ReadOnly = true;
             // 
             // diffPage
             // 
