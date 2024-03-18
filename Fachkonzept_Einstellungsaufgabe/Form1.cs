@@ -1,7 +1,10 @@
 using ClosedXML.Excel;
+using DocumentFormat.OpenXml.Spreadsheet;
 using MaterialSkin;
 using MaterialSkin.Controls;
 using System.Data;
+using System.Windows.Forms;
+using Color = System.Drawing.Color;
 
 namespace Fachkonzept_Einstellungsaufgabe
 {
@@ -176,60 +179,78 @@ namespace Fachkonzept_Einstellungsaufgabe
 
         private void showDifferencesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            DataTable prodTable = dataControlPanel.prodGrid.DataSource as DataTable;
-            DataTable testTable = dataControlPanel.testGrid.DataSource as DataTable;
-
-
-            // find matching rows (prodTableRow, matchingTestTableRow)
-            if (prodTable != null && testTable != null)
+            try
             {
-                testTable = testTable.DefaultView.ToTable();
+                DataTable prodTable = dataControlPanel.prodGrid.DataSource as DataTable;
+                DataTable testTable = dataControlPanel.testGrid.DataSource as DataTable;
 
-                // highlight differences
-                DataTable completeTable = dataControlPanel.diffGrid.DataSource as DataTable;
-                DataTable diffTable = completeTable.DefaultView.ToTable();
-
-                foreach (DataRow row in diffTable.Rows)
+                // find matching rows (prodTableRow, matchingTestTableRow)
+                if (prodTable != null && testTable != null)
                 {
-                    DataRow checkRow = findMatchingRow(row, testTable);
+                    // reduced table
+                    testTable = testTable.DefaultView.ToTable();
 
-                    // no row found
-                    if (checkRow == row)
+                    // highlight differences
+                    DataTable completeTable = dataControlPanel.diffGrid.DataSource as DataTable;
+                    DataTable diffTable = completeTable.DefaultView.ToTable();
+
+                    foreach (DataRow row in diffTable.Rows)
                     {
-                        foreach (DataColumn diffColumn in diffTable.Columns)
+                        DataRow checkRow = findMatchingRow(row, testTable);
+
+                        // no row found
+                        if (checkRow.Equals(row))
                         {
-                            dataControlPanel.diffGrid.Rows[diffTable.Rows.IndexOf(row)].Cells[diffColumn.ColumnName].Style.BackColor = ColorTranslator.FromHtml("#6e5e5d");
-                            dataControlPanel.diffGrid.Rows[diffTable.Rows.IndexOf(row)].Cells[diffColumn.ColumnName].ToolTipText = "This Row doesn't exist in Testversion";
-                        }
-                    }
-                    else
-                    {
-                        foreach (DataColumn diffColumn in diffTable.Columns)
-                        {
-                            if (testTable.Columns.Contains(diffColumn.ColumnName))
+                            foreach (DataColumn diffColumn in diffTable.Columns)
                             {
-                                // column exists
-                                if (dataControlPanel.diffGrid.Rows[diffTable.Rows.IndexOf(row)].Cells[diffColumn.ColumnName].Value.ToString() !=
-                                        dataControlPanel.testGrid.Rows[testTable.Rows.IndexOf(checkRow)].Cells[diffColumn.ColumnName].Value.ToString())
-                                {
-                                    dataControlPanel.diffGrid.Rows[diffTable.Rows.IndexOf(row)].Cells[diffColumn.ColumnName].Style.BackColor = ColorTranslator.FromHtml("#f5edac");
-                                    dataControlPanel.diffGrid.Rows[diffTable.Rows.IndexOf(row)].Cells[diffColumn.ColumnName].ToolTipText =
-                                        dataControlPanel.testGrid.Rows[testTable.Rows.IndexOf(checkRow)].Cells[diffColumn.ColumnName].Value.ToString();
-                                }
+                                dataControlPanel.diffGrid.Rows[diffTable.Rows.IndexOf(row)].Cells[diffColumn.ColumnName].Style.BackColor = ColorTranslator.FromHtml("#6e5e5d");
+                                dataControlPanel.diffGrid.Rows[diffTable.Rows.IndexOf(row)].Cells[diffColumn.ColumnName].ToolTipText = "This Row doesn't exist in Testversion";
                             }
-                            // column doesn't exist
-                            else
+                        }
+                        else
+                        {
+                            foreach (DataColumn diffColumn in diffTable.Columns)
                             {
-                                dataControlPanel.diffGrid.Rows[diffTable.Rows.IndexOf(row)].Cells[diffColumn.ColumnName].Style.BackColor = ColorTranslator.FromHtml("#df7674");
-                                dataControlPanel.diffGrid.Rows[diffTable.Rows.IndexOf(row)].Cells[diffColumn.ColumnName].ToolTipText = "This Column doesn't exist in Testversion";
+                                if (testTable.Columns.Contains(diffColumn.ColumnName))
+                                {
+                                    // column exists
+                                    if (dataControlPanel.diffGrid.Rows[diffTable.Rows.IndexOf(row)].Cells[diffColumn.ColumnName].Value.ToString() !=
+                                            dataControlPanel.testGrid.Rows[testTable.Rows.IndexOf(checkRow)].Cells[diffColumn.ColumnName].Value.ToString())
+                                    {
+                                        dataControlPanel.diffGrid.Rows[diffTable.Rows.IndexOf(row)].Cells[diffColumn.ColumnName].Style.BackColor = ColorTranslator.FromHtml("#f5edac");
+                                        dataControlPanel.diffGrid.Rows[diffTable.Rows.IndexOf(row)].Cells[diffColumn.ColumnName].ToolTipText =
+                                            dataControlPanel.testGrid.Rows[testTable.Rows.IndexOf(checkRow)].Cells[diffColumn.ColumnName].Value.ToString();
+                                    }
+                                    else
+                                    {
+                                        if (dataControlPanel.diffGrid.Rows[diffTable.Rows.IndexOf(row)].Cells[diffColumn.ColumnName].RowIndex % 2 == 1)
+                                        {
+                                            dataControlPanel.diffGrid.Rows[diffTable.Rows.IndexOf(row)].Cells[diffColumn.ColumnName].Style.BackColor = Color.LightGray;
+                                        }
+                                        else
+                                        {
+                                            dataControlPanel.diffGrid.Rows[diffTable.Rows.IndexOf(row)].Cells[diffColumn.ColumnName].Style.BackColor = Color.Empty;
+                                        }
+                                    }
+                                }
+                                // column doesn't exist
+                                else
+                                {
+                                    dataControlPanel.diffGrid.Rows[diffTable.Rows.IndexOf(row)].Cells[diffColumn.ColumnName].Style.BackColor = ColorTranslator.FromHtml("#df7674");
+                                    dataControlPanel.diffGrid.Rows[diffTable.Rows.IndexOf(row)].Cells[diffColumn.ColumnName].ToolTipText = "This Column doesn't exist in Testversion";
+                                }
                             }
                         }
                     }
                 }
-            }
-            else
+                else
+                {
+                    MessageBox.Show("Please load both tables before comparing.", "Missing Data", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }catch (ArgumentOutOfRangeException)
             {
-                MessageBox.Show("Please load both tables before comparing.", "Missing Data", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Some rows can't be matched. Try reloading the filter.", "Filter Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
             }
         }
 
@@ -270,11 +291,11 @@ namespace Fachkonzept_Einstellungsaufgabe
                     cell.ToolTipText = "";
                     if (cell.RowIndex % 2 == 1)
                     {
-                        cell.Style.BackColor = System.Drawing.Color.LightGray;
+                        cell.Style.BackColor = Color.LightGray;
                     }
                     else
                     {
-                        cell.Style.BackColor = System.Drawing.Color.Empty;
+                        cell.Style.BackColor = Color.Empty;
                     }
                 }
             }
@@ -293,16 +314,6 @@ namespace Fachkonzept_Einstellungsaufgabe
         private void closeAltF4ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Close();
-        }
-
-        private void testfileToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            tabHelp.Visible = !tabHelp.Visible;
-        }
-
-        private void legendToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            colorHelp.Visible = !colorHelp.Visible;
         }
     }
 }

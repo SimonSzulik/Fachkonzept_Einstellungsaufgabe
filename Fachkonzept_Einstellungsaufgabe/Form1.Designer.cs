@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Screen));
             dataControlPanel = new UserControl1();
             menu = new MenuStrip();
             fileToolStripMenuItem = new ToolStripMenuItem();
@@ -39,11 +38,6 @@
             toolStripSeparator2 = new ToolStripSeparator();
             closeAltF4ToolStripMenuItem = new ToolStripMenuItem();
             showDifferencesToolStripMenuItem = new ToolStripMenuItem();
-            helpToolStripMenuItem = new ToolStripMenuItem();
-            testfileToolStripMenuItem = new ToolStripMenuItem();
-            legendToolStripMenuItem = new ToolStripMenuItem();
-            tabHelp = new RichTextBox();
-            colorHelp = new RichTextBox();
             menu.SuspendLayout();
             SuspendLayout();
             // 
@@ -57,7 +51,7 @@
             // 
             // menu
             // 
-            menu.Items.AddRange(new ToolStripItem[] { fileToolStripMenuItem, showDifferencesToolStripMenuItem, helpToolStripMenuItem });
+            menu.Items.AddRange(new ToolStripItem[] { fileToolStripMenuItem, showDifferencesToolStripMenuItem });
             menu.Location = new Point(3, 64);
             menu.Name = "menu";
             menu.Size = new Size(805, 24);
@@ -116,56 +110,12 @@
             showDifferencesToolStripMenuItem.Text = "Show Differences";
             showDifferencesToolStripMenuItem.Click += showDifferencesToolStripMenuItem_Click;
             // 
-            // helpToolStripMenuItem
-            // 
-            helpToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { testfileToolStripMenuItem, legendToolStripMenuItem });
-            helpToolStripMenuItem.Name = "helpToolStripMenuItem";
-            helpToolStripMenuItem.Size = new Size(44, 20);
-            helpToolStripMenuItem.Text = "Help";
-            // 
-            // testfileToolStripMenuItem
-            // 
-            testfileToolStripMenuItem.Name = "testfileToolStripMenuItem";
-            testfileToolStripMenuItem.Size = new Size(180, 22);
-            testfileToolStripMenuItem.Text = "Tabs and Functions";
-            testfileToolStripMenuItem.Click += testfileToolStripMenuItem_Click;
-            // 
-            // legendToolStripMenuItem
-            // 
-            legendToolStripMenuItem.Name = "legendToolStripMenuItem";
-            legendToolStripMenuItem.Size = new Size(180, 22);
-            legendToolStripMenuItem.Text = "Color Legend";
-            legendToolStripMenuItem.Click += legendToolStripMenuItem_Click;
-            // 
-            // tabHelp
-            // 
-            tabHelp.AcceptsTab = true;
-            tabHelp.Location = new Point(120, 146);
-            tabHelp.Name = "tabHelp";
-            tabHelp.ReadOnly = true;
-            tabHelp.Size = new Size(575, 252);
-            tabHelp.TabIndex = 8;
-            tabHelp.Text = resources.GetString("tabHelp.Text");
-            tabHelp.Visible = false;
-            // 
-            // colorHelp
-            // 
-            colorHelp.Location = new Point(120, 146);
-            colorHelp.Name = "colorHelp";
-            colorHelp.ReadOnly = true;
-            colorHelp.Size = new Size(575, 252);
-            colorHelp.TabIndex = 9;
-            colorHelp.Text = resources.GetString("colorHelp.Text");
-            colorHelp.Visible = false;
-            // 
             // Screen
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.Gainsboro;
             ClientSize = new Size(811, 490);
-            Controls.Add(colorHelp);
-            Controls.Add(tabHelp);
             Controls.Add(dataControlPanel);
             Controls.Add(menu);
             MainMenuStrip = menu;
@@ -187,10 +137,5 @@
         private ToolStripMenuItem showDifferencesToolStripMenuItem;
         private ToolStripSeparator toolStripSeparator1;
         private ToolStripSeparator toolStripSeparator2;
-        private ToolStripMenuItem helpToolStripMenuItem;
-        private ToolStripMenuItem legendToolStripMenuItem;
-        private ToolStripMenuItem testfileToolStripMenuItem;
-        private RichTextBox tabHelp;
-        private RichTextBox colorHelp;
     }
 }
